@@ -41,17 +41,19 @@ const AudioPlayer = () => {
     // {
     //   "startPosition": 43,
     //   "endPosition": 59,
-    //   "timeStampColor": "#fff40f",
-    //   "id": 3,
+    //  timeStampColor: "#fff40f",
+    //  id: 3,
     //   "action": "Need Review ",
     // },
     // {
     //   "startPosition": 44,
     //   "endPosition": 50,
-    //   "timeStampColor": "#FF0000",
-    //   "id": 1,
+    //  timeStampColor: "#FF0000",
+    //  id: 1,
     //   "action": "Exercises ",
     // },
+    // [
+    // ]
   ]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -81,10 +83,10 @@ const AudioPlayer = () => {
 
     if (allowedExtensions.exec(e.target.files[0]?.name)) {
       if (audioExtensions.exec(e.target.files[0]?.name)) {
-        setMessage("Please Upload  .M4A .MP3 Audio File Only");
+        setMessage("Please Upload  .m4a .mp3 Audio File Only");
       }
       if (videoExtensions.exec(e.target.files[0]?.name)) {
-        setMessage("Please Upload  .MP4 .Mkv Video File Only");
+        setMessage("Please Upload  .mP4 .Mkv Video File Only");
       } else {
         setMessage("");
         setAudio(URL?.createObjectURL(e.target.files[0]));
@@ -189,6 +191,9 @@ const AudioPlayer = () => {
           (highLightItem?.endPosition * 570) / duration
         );
         let blockWidth = endPosition - leftSpace;
+
+        // let index = index;
+        // console.log();
         return {
           leftSpace: leftSpace,
           blockWidth: blockWidth,
@@ -197,6 +202,9 @@ const AudioPlayer = () => {
           index: highLightItem.index + 1 || index + 1,
         };
       });
+
+      console.log("height", highLightBlocks);
+      console.log("lis", listdata);
       setHighLightBlocks([...listdata, ...highLightBlocks]);
       setindex(index + 1);
       // console.log("listdata", listdata);
@@ -418,8 +426,9 @@ const AudioPlayer = () => {
                 className={styles.mainRange}
                 style={{
                   position: "absolute",
-                  top: 300,
+                  // top: 300,
                   width: 570,
+                  top: 294,
                   cursor: "pointer",
                 }}
                 onClick={(e) => moveTo(e)}
@@ -438,11 +447,11 @@ const AudioPlayer = () => {
                       className={styles.seekBar1}
                       style={{
                         width: `${data.blockWidth}px`,
-                        height: "60%",
+                        height: "70%",
                         left: `${data.leftSpace}px`,
                         backgroundColor: `${data.timeStampColor}`,
                         position: "absolute",
-                        opacity: 0.7,
+                        opacity: 0.6,
                         zIndex: data.index,
                         cursor: "pointer",
                       }}
@@ -703,7 +712,7 @@ const AudioPlayer = () => {
                   onClick={() =>
                     addExercises({
                       id: 4,
-                      color: "#FF00FF",
+                      color: "#FF66FF",
                       message: "Call To Action",
                       action: "callToAction",
                     })
@@ -720,7 +729,7 @@ const AudioPlayer = () => {
                   onClick={() =>
                     addExercises({
                       id: 1,
-                      color: "#FF0000",
+                      color: "#FF6666",
                       message: "Exercises Time",
                       action: "Exercises ",
                     })
@@ -736,7 +745,7 @@ const AudioPlayer = () => {
                   onClick={() =>
                     addExercises({
                       id: 2,
-                      color: "#309c00",
+                      color: "#66ff66",
                       message: "Questions Time",
                       action: "Questions ",
                     })
