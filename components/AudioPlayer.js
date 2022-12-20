@@ -71,30 +71,28 @@ const AudioPlayer = () => {
   const [maxValue, setMaxValue] = useState();
 
   const uploadAudio = (e) => {
-    if (
-      e.target.files[0]?.type === "video/mp4" ||
-      e.target.files[0]?.type === "audio/mpeg"
-    ) {
-      // console.log(":kn");
-      setAudio(URL?.createObjectURL(e.target.files[0]));
-      setMessage("");
+    console.log("a", e.target.files[0]?.name);
+
+    var allowedExtensions =
+      /(\.MP4|\.MOV|\.WMV|\.AVI|\.MKV|\WEBM|\.M4A|\.FLAC|\.MP3|\.WAV|\.WMA|\.AAC)$/i;
+
+    const audioExtensions = /(\.FLAC\.WMA|\.AAC)$/i;
+    const videoExtensions = /(\.WMV|\.AVI|\WEBM)$/i;
+
+    if (allowedExtensions.exec(e.target.files[0]?.name)) {
+      if (audioExtensions.exec(e.target.files[0]?.name)) {
+        setMessage("Please Upload  .M4A .MP3 Audio File Only");
+      }
+      if (videoExtensions.exec(e.target.files[0]?.name)) {
+        setMessage("Please Upload  .MP4 .mkv Video File Only");
+      } else {
+        setMessage("");
+        setAudio(URL?.createObjectURL(e.target.files[0]));
+      }
     } else {
-      setMessage("Please Upload Audio/Video File ");
-      setAudio();
+      setMessage("Please Upload Audio/Video File");
     }
-
-    // const seconds = Math.floor(audioPlayer.current.duration);
-    // console.log("sec", seconds);
-    // setDuration(seconds);
-    // progressBar.current.max = seconds;
   };
-  // const checkVideoOver = (sec) => {
-  //   console.log("sec", sec, "duration", duration);
-  //   // if (Number(sec) === duration) {
-  //   //   setIsPlaying(false);
-
-  //   // }
-  // };
 
   const calculateTime = (secs) => {
     // checkVideoOver(currentTime);
@@ -373,21 +371,22 @@ const AudioPlayer = () => {
             style={{
               marginTop: 10,
             }}
+            // accept="audio/*,video/*"
             onChange={uploadAudio}
           />
 
-          {audio && (
-            <div>
-              <button
-                onClick={submtImage}
-                style={{
-                  marginTop: 10,
-                }}
-              >
-                Upload Audio/Video
-              </button>
-            </div>
-          )}
+          {/* {audio && ( */}
+          <div>
+            <button
+              onClick={submtImage}
+              style={{
+                marginTop: 10,
+              }}
+            >
+              Upload Audio/Video
+            </button>
+          </div>
+          {/* )} */}
         </div>
       )}
 
