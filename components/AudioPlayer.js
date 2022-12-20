@@ -84,7 +84,7 @@ const AudioPlayer = () => {
         setMessage("Please Upload  .M4A .MP3 Audio File Only");
       }
       if (videoExtensions.exec(e.target.files[0]?.name)) {
-        setMessage("Please Upload  .MP4 .mkv Video File Only");
+        setMessage("Please Upload  .MP4 .Mkv Video File Only");
       } else {
         setMessage("");
         setAudio(URL?.createObjectURL(e.target.files[0]));
