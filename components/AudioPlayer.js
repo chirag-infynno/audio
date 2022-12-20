@@ -77,7 +77,7 @@ const AudioPlayer = () => {
       /(\.MP4|\.MOV|\.WMV|\.AVI|\.MKV|\WEBM|\.M4A|\.FLAC|\.MP3|\.WAV|\.WMA|\.AAC)$/i;
 
     const audioExtensions = /(\.FLAC\.WMA|\.AAC)$/i;
-    const videoExtensions = /(\.WMV|\.AVI|\WEBM)$/i;
+    const videoExtensions = /(\.WMV|\.AVI|\.WEBM)$/i;
 
     if (allowedExtensions.exec(e.target.files[0]?.name)) {
       if (audioExtensions.exec(e.target.files[0]?.name)) {
