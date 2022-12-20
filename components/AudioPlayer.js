@@ -459,6 +459,8 @@ const AudioPlayer = () => {
               <button
                 style={{
                   backgroundColor: "#FF00FF",
+                  paddingLeft: 50,
+                  paddingRight: 50,
                 }}
                 className={styles.buttonStyle}
                 onClick={() => {
@@ -782,6 +784,7 @@ const AudioPlayer = () => {
           <div
             style={{
               marginTop: 100,
+              marginLeft: 40,
             }}
           >
             <table>
