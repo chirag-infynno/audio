@@ -84,7 +84,7 @@ const AudioPlayer = () => {
         setMessage("Please Upload  .m4a .mp3 Audio File Only");
       }
       if (videoExtensions.exec(e.target.files[0]?.name)) {
-        setMessage("Please Upload  .mP4 .Mkv Video File Only");
+        setMessage("Please Upload  .mP4 .mkv Video File Only");
       } else {
         setMessage("");
         setAudio(URL?.createObjectURL(e.target.files[0]));
@@ -186,10 +186,12 @@ const AudioPlayer = () => {
       if (getSelectdData.length > 0) {
         let listdata = getSelectdData?.map((highLightItem) => {
           let leftSpace = Math.trunc(
-            (highLightItem?.startPosition * 570) / duration
+            (highLightItem?.startPosition * progressBar.current.offsetWidth) /
+              duration
           );
           let endPosition = Math.trunc(
-            (highLightItem?.endPosition * 570) / duration
+            (highLightItem?.endPosition * progressBar.current.offsetWidth) /
+              duration
           );
           let blockWidth = endPosition - leftSpace;
           return {
@@ -322,12 +324,13 @@ const AudioPlayer = () => {
     setCurrentTime(progressBar.current.value);
   };
   const moveTo = (e) => {
+    console.log("audio size", progressBar.current.offsetWidth);
     let time;
     time =
       (e.target.parentElement.offsetLeft +
         e.target.parentElement.parentElement.offsetLeft -
         e.clientX) /
-      (570 / duration);
+      (progressBar.current.offsetWidth / duration);
     progressBar.current.value = Math.abs(Math.floor(time));
     changeRange();
   };
@@ -339,84 +342,64 @@ const AudioPlayer = () => {
       (e.target.parentElement.parentElement.offsetLeft +
         e.target.parentElement.parentElement.parentElement.offsetLeft -
         e.clientX) /
-      (570 / duration);
+      (progressBar.current.offsetWidth / duration);
     progressBar.current.value = Math.abs(Math.floor(time));
     changeRange();
   };
 
+  if (typeof document !== "undefined") {
+    // console.log("aslncjb");
+
+    window.onresize = () => {
+      console.log("audioPlayer", audioPlayer);
+      console.log(window.innerWidth);
+    };
+    document.onscroll = () => {
+      // window.pageYOffset > position?.current?.offsetParent?.offsetTop
+      //   ? setSticky(true)
+      //   : setSticky(false);
+      console.log("asmcl");
+    };
+  }
   return (
     <>
       {!show && (
-        <div>
-          <div>Upload Audio/Video</div>
-          {message && (
-            <div
-              style={{
-                color: "red",
-                marginTop: 10,
-                marginBottom: 5,
-              }}
-            >
-              {message}
-            </div>
-          )}
-          <input
-            type="file"
-            style={{
-              marginTop: 10,
-            }}
-            // accept="audio/*,video/*"
-            onChange={uploadAudio}
-          />
+        <div className="flex justify-center flex-col items-center">
+          <div className="flex flex-col gap-[12px]">
+            <div>Upload Audio/Video</div>
+            {message && <div className="text-red-600">{message}</div>}
+            <input
+              type="file"
+              accept="audio/*,video/*"
+              onChange={uploadAudio}
+            />
 
-          {audio && (
-            <div>
-              <button
-                onClick={submtImage}
-                style={{
-                  marginTop: 10,
-                }}
-              >
-                Upload Audio/Video
-              </button>
-            </div>
-          )}
+            {audio && (
+              <div>
+                <button
+                  onClick={submtImage}
+                  className="bg-blue-500 px-2 py-2 text-white rounded-sm border-[1px]"
+                >
+                  Upload Audio/Video
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
       {show && (
         <div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <div
-              className={styles.audioPlayer}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                position: "relative",
-              }}
-            >
+          <div className="flex flex-col md:flex-row  md:justify-between gap-20 md:gap-0 w-full xl:max-w-[1440xp]  xl:pr-20 px-4">
+            <div className="flex  relative flex-col gap-1">
               <video
                 ref={audioPlayer}
                 src={audio}
+                className="max-h-[326px] w-[575px] md:w-full"
                 preload="metadata"
-                style={{
-                  height: 326,
-                }}
               ></video>
               <div
-                className={styles.mainRange}
-                style={{
-                  position: "absolute",
-                  // top: 300,
-                  width: 570,
-                  top: 294,
-                  cursor: "pointer",
-                }}
+                className="absolute w-full max-w-[570px]  cursor-pointer bottom-16 "
                 onClick={(e) => moveTo(e)}
               >
                 <input
@@ -442,32 +425,42 @@ const AudioPlayer = () => {
                         cursor: "pointer",
                       }}
                       onClick={(e) => suuget(e)}
-                      // onClick={}
                     ></div>
                   ))}
                 </div>
               </div>
+
+              <div className="flex justify-center border-[1px] border-black items-center max-w-[157px] relative">
+                <button onClick={togglePlayPause} className={styles.playPause}>
+                  {Number(currentTime) !== duration ? (
+                    isPlaying ? (
+                      <FaPause />
+                    ) : (
+                      <FaPlay />
+                    )
+                  ) : (
+                    <MdOutlineReplayCircleFilled />
+                  )}
+                </button>
+                <div>
+                  {calculateTime(currentTime)}/{/* </div> */}
+                  {duration && !isNaN(duration) && calculateTime(duration)}
+                </div>
+              </div>
             </div>
 
-            <div className={styles.buttonlist}>
+            <div className="grid md:grid-cols-1 grid-cols-2 gap-5  md: h-max">
               <button
-                style={{
-                  backgroundColor: "#FF00FF",
-                  paddingLeft: 50,
-                  paddingRight: 50,
-                }}
-                className={styles.buttonStyle}
+                className=" bg-[#FF00FF]  py-2 px-2 lg:w-56 md:w-40 h-10"
                 onClick={() => {
                   getBlockPositions({ id: 4 });
                 }}
               >
                 Call To Action
               </button>
+
               <button
-                style={{
-                  backgroundColor: "#FF0000",
-                }}
-                className={styles.buttonStyle}
+                className=" bg-[#FF0000]  py-2 px-2 lg:w-56 md:w-40 h-10"
                 onClick={() => {
                   getBlockPositions({ id: 1 });
                 }}
@@ -475,29 +468,20 @@ const AudioPlayer = () => {
                 Exercises
               </button>
               <button
-                style={{
-                  backgroundColor: "#309c00",
-                }}
-                className={styles.buttonStyle}
+                className=" bg-[#309c00]  py-2 px-2 lg:w-56 md:w-40 h-10"
                 onClick={() => getBlockPositions({ id: 2 })}
               >
                 Questions
               </button>
               <button
-                className={styles.buttonStyle}
-                style={{
-                  backgroundColor: "#fff40f",
-                }}
+                className=" bg-[#fff40f]  py-2 px-2 lg:w-56 md:w-40 h-10"
                 onClick={() => getBlockPositions({ id: 3 })}
               >
                 Need Review
               </button>
 
               <button
-                className={styles.buttonStyle}
-                style={{
-                  backgroundColor: "#40E0D0",
-                }}
+                className=" bg-[#40E0D0]  py-2 px-2 lg:w-56 md:w-40 h-10"
                 onClick={() => getBlockPositions({ id: 5 })}
               >
                 Insight
@@ -505,91 +489,11 @@ const AudioPlayer = () => {
             </div>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              justifyItems: "center",
-              marginLeft: 62,
-              border: "1px solid black",
-              maxWidth: 157,
-              marginTop: 10,
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
-            {/* <button className={styles.forwardBackward} onClick={backThirty}>
-              <BsArrowLeftShort /> 30
-            </button> */}
-            <button onClick={togglePlayPause} className={styles.playPause}>
-              {Number(currentTime) !== duration ? (
-                isPlaying ? (
-                  <FaPause />
-                ) : (
-                  <FaPlay />
-                )
-              ) : (
-                <MdOutlineReplayCircleFilled />
-              )}
-              {/* play now */}
-            </button>
-            {/* <div className={styles.currentTime}> */}
-            <div>
-              {calculateTime(currentTime)}/{/* </div> */}
-              {/* <div className={styles.duration}> */}
-              {/* {calculateEndTime(duration)} */}
-              {/* {calculateTimeEnd()} */}
-              {duration && !isNaN(duration) && calculateTime(duration)}
-            </div>
-            {/* </div> */}
-            {/* <button className={styles.forwardBackward} onClick={forwardThirty}>
-              30 <BsArrowRightShort />
-            </button> */}
-            {/* current time */}
-            {/* progress bar */}
-            {/* <div className="progress-4 relative">
-              {highLightBlocks.length > 0 &&
-                highLightBlocks.map((highLightBlock) => {
-                  if (highLightBlock.leftSpace || highLightBlock.blockWidth) {
-                    let blockStyle = `w-[${highLightBlock.blockWidth}px] left-[${highLightBlock.leftSpace}px] `;
-                    return (
-                      <div
-                        // width={highLightBlock.blockWidth + "px"}
-
-                        className={`progress ${blockStyle}`}
-                      ></div>
-                    );
-                  }
-                  return null;
-                })}
-            </div> */}
-            {/* duration */}
-          </div>
-
-          <div
-            className="custom"
-            style={{
-              position: "relative",
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                color: "red",
-                top: "50px",
-                left: 50,
-              }}
-            >
+          <div className="mt-20 relative px-4">
+            <div className="absolute text-red-500 top-[50px] left-[50px]">
               {message}
             </div>
-            <div
-              className=""
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 40,
-                marginLeft: 50,
-              }}
-            >
+            <div className="flex flex-col md:gap-11 gap-7">
               <div
                 style={{
                   display: "flex",
@@ -598,7 +502,7 @@ const AudioPlayer = () => {
               >
                 <div className="startpositon">
                   <div> Start Time</div>
-                  <div className="alllabel">
+                  <div className="flex gap-1">
                     {duration > 3600 && (
                       <div>
                         <input
@@ -606,7 +510,8 @@ const AudioPlayer = () => {
                           name="hour"
                           min={0}
                           max={23}
-                          placeholder="HH"
+                          placeholder=" HH"
+                          className="border-[1px] border-solid border-black  focus:outline-none "
                           value={startTime.hour}
                           onChange={changeStartdate}
                         />
@@ -620,8 +525,9 @@ const AudioPlayer = () => {
                           min={0}
                           max={59}
                           value={startTime.min}
-                          placeholder="MM"
+                          placeholder=" MM"
                           onChange={changeStartdate}
+                          className="border-[1px] border-solid border-black  focus:outline-none "
                         />
                       </div>
                     )}
@@ -633,9 +539,10 @@ const AudioPlayer = () => {
                         min={0}
                         // max={60}
                         value={startTime.sec}
-                        placeholder="SS"
+                        placeholder=" SS"
                         max={59}
                         onChange={changeStartdate}
+                        className="border-[1px] border-solid border-black  focus:outline-none "
                       />
                     </div>
                   </div>
@@ -643,7 +550,7 @@ const AudioPlayer = () => {
                 <div className="startpositon">
                   <div> End Time</div>
 
-                  <div className="alllabel">
+                  <div className="flex gap-1">
                     {duration > 3600 && (
                       <div>
                         <input
@@ -651,9 +558,10 @@ const AudioPlayer = () => {
                           name="hour"
                           min={0}
                           max={24}
-                          placeholder="HH"
+                          placeholder=" HH"
                           value={endTime.hour}
                           onChange={changeEndTime}
+                          className="border-[1px] border-solid border-black  focus:outline-none "
                         />
                       </div>
                     )}
@@ -665,8 +573,9 @@ const AudioPlayer = () => {
                           min={0}
                           max={59}
                           value={endTime.min}
-                          placeholder="MM"
+                          placeholder=" MM"
                           onChange={changeEndTime}
+                          className="border-[1px] border-solid border-black  focus:outline-none "
                         />
                       </div>
                     )}
@@ -677,24 +586,27 @@ const AudioPlayer = () => {
                         min={0}
                         max={59}
                         value={endTime.sec}
-                        placeholder="SS"
+                        placeholder=" SS"
                         onChange={changeEndTime}
+                        className="border-[1px] border-solid border-black  focus:outline-none "
                       />
                     </div>
                   </div>
                 </div>
               </div>
               <div
-                style={{
-                  display: "flex",
-                  gap: 10,
-                }}
+                className="grid xl:grid-cols-5 gap-5    md:grid-cols-3  grid-cols-2"
+                // style={{
+                //   display: "flex",
+                //   gap: 10,
+                // }}
               >
                 <button
                   style={{
                     backgroundColor: "#FF00FF",
                   }}
-                  className={styles.buttonStyle}
+                  className="sm:whitespace-nowrap px-5 py-3"
+                  // className={styles.buttonStyle}
                   onClick={() =>
                     addExercises({
                       id: 4,
@@ -711,7 +623,9 @@ const AudioPlayer = () => {
                   style={{
                     backgroundColor: "#FF0000",
                   }}
-                  className={styles.buttonStyle}
+                  // className="sm:whitespace-nowrap"
+                  className="sm:whitespace-nowrap px-5 py-3"
+                  // className={styles.buttonStyle}
                   onClick={() =>
                     addExercises({
                       id: 1,
@@ -727,7 +641,9 @@ const AudioPlayer = () => {
                   style={{
                     backgroundColor: "#309c00",
                   }}
-                  className={styles.buttonStyle}
+                  // className="sm:whitespace-nowrap"
+                  className="sm:whitespace-nowrap px-5 py-3  w-full max-w-lg"
+                  // className={styles.buttonStyle}
                   onClick={() =>
                     addExercises({
                       id: 2,
@@ -743,7 +659,8 @@ const AudioPlayer = () => {
                   style={{
                     backgroundColor: "#fff40f",
                   }}
-                  className={styles.buttonStyle}
+                  className="sm:whitespace-nowrap px-5 py-3 "
+                  // className={styles.buttonStyle}
                   onClick={() =>
                     addExercises({
                       id: 3,
@@ -760,7 +677,8 @@ const AudioPlayer = () => {
                   style={{
                     backgroundColor: "#40E0D0",
                   }}
-                  className={styles.buttonStyle}
+                  className="sm:whitespace-nowrap px-5 py-3"
+                  // className={styles.buttonStyle}
                   onClick={() =>
                     addExercises({
                       id: 5,
@@ -775,12 +693,7 @@ const AudioPlayer = () => {
               </div>
             </div>
           </div>
-          <div
-            style={{
-              marginTop: 100,
-              marginLeft: 40,
-            }}
-          >
+          <div className="mt-28 px-4">
             <table>
               <tr>
                 <th>Index</th>
