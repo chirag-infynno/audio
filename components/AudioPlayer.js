@@ -82,14 +82,17 @@ const AudioPlayer = () => {
     if (allowedExtensions.exec(e.target.files[0]?.name)) {
       if (audioExtensions.exec(e.target.files[0]?.name)) {
         setMessage("Please Upload  .m4a .mp3 Audio File Only");
+        setAudio();
       }
       if (videoExtensions.exec(e.target.files[0]?.name)) {
         setMessage("Please Upload  .mP4 .mkv Video File Only");
+        setAudio();
       } else {
         setMessage("");
         setAudio(URL?.createObjectURL(e.target.files[0]));
       }
     } else {
+      setAudio();
       setMessage("Please Upload Audio/Video File");
     }
   };
