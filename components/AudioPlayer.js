@@ -73,8 +73,6 @@ const AudioPlayer = () => {
   const [maxValue, setMaxValue] = useState();
 
   const uploadAudio = (e) => {
-    console.log("a", e.target.files[0]?.name);
-
     var allowedExtensions =
       /(\.MP4|\.MOV|\.WMV|\.AVI|\.MKV|\.WEBM|\.M4A|\.FLAC|\.MP3|\.WAV|\.WMA|\.AAC)$/i;
 
@@ -167,6 +165,7 @@ const AudioPlayer = () => {
   };
 
   const getBlockPositions = (highLightItemData) => {
+    console.log("index", index);
     const find = highLightBlocks.filter((data) => {
       if (data.id !== highLightItemData.id) {
         return {
@@ -174,6 +173,8 @@ const AudioPlayer = () => {
         };
       }
     });
+
+    console.log("index", index);
     if (find.length === highLightBlocks.length) {
       console.log("find ");
 
@@ -181,33 +182,29 @@ const AudioPlayer = () => {
         return data.id === highLightItemData.id;
       });
 
-      console.log("get all data", getSelectdData);
+      console.log("getSelectdData");
+      if (getSelectdData.length > 0) {
+        let listdata = getSelectdData?.map((highLightItem) => {
+          let leftSpace = Math.trunc(
+            (highLightItem?.startPosition * 570) / duration
+          );
+          let endPosition = Math.trunc(
+            (highLightItem?.endPosition * 570) / duration
+          );
+          let blockWidth = endPosition - leftSpace;
+          return {
+            leftSpace: leftSpace,
+            blockWidth: blockWidth,
+            timeStampColor: highLightItem.timeStampColor,
+            id: highLightItem.id,
+            index: highLightItem.index + 1 || index + 1,
+          };
+        });
 
-      let listdata = getSelectdData?.map((highLightItem) => {
-        let leftSpace = Math.trunc(
-          (highLightItem?.startPosition * 570) / duration
-        );
-        let endPosition = Math.trunc(
-          (highLightItem?.endPosition * 570) / duration
-        );
-        let blockWidth = endPosition - leftSpace;
+        setHighLightBlocks([...listdata, ...highLightBlocks]);
 
-        // let index = index;
-        // console.log();
-        return {
-          leftSpace: leftSpace,
-          blockWidth: blockWidth,
-          timeStampColor: highLightItem.timeStampColor,
-          id: highLightItem.id,
-          index: highLightItem.index + 1 || index + 1,
-        };
-      });
-
-      console.log("height", highLightBlocks);
-      console.log("lis", listdata);
-      setHighLightBlocks([...listdata, ...highLightBlocks]);
-      setindex(index + 1);
-      // console.log("listdata", listdata);
+        setindex(index + 1);
+      }
     } else {
       let changeIndex = find.map((data) => {
         return {
@@ -305,7 +302,6 @@ const AudioPlayer = () => {
   //   //   setMaxValue(seconds);
   //   // }, 300);
 
-  //   console.log("nakscnkn");
   // }, [audioPlayer?.current?.value]);
 
   const forwardThirty = () => {
@@ -326,14 +322,6 @@ const AudioPlayer = () => {
     setCurrentTime(progressBar.current.value);
   };
   const moveTo = (e) => {
-    console.log(e);
-    console.log(
-      "asll",
-      e.target.parentElement.offsetLeft,
-      e.target.parentElement.parentElement.offsetLeft,
-      e.screenX
-    );
-
     let time;
     time =
       (e.target.parentElement.offsetLeft +
@@ -341,8 +329,6 @@ const AudioPlayer = () => {
         e.clientX) /
       (570 / duration);
     progressBar.current.value = Math.abs(Math.floor(time));
-    console.log("time", time);
-
     changeRange();
   };
 
@@ -383,18 +369,18 @@ const AudioPlayer = () => {
             onChange={uploadAudio}
           />
 
-          {/* {audio && ( */}
-          <div>
-            <button
-              onClick={submtImage}
-              style={{
-                marginTop: 10,
-              }}
-            >
-              Upload Audio/Video
-            </button>
-          </div>
-          {/* )} */}
+          {audio && (
+            <div>
+              <button
+                onClick={submtImage}
+                style={{
+                  marginTop: 10,
+                }}
+              >
+                Upload Audio/Video
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -812,9 +798,7 @@ const AudioPlayer = () => {
                     style={{
                       backgroundColor: data.timeStampColor,
                     }}
-                    onClick={() => {
-                      console.log(data);
-                    }}
+                    onClick={() => {}}
                   >
                     {data.action}
                   </td>
